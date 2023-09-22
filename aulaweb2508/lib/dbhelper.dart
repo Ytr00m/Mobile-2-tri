@@ -5,11 +5,11 @@ import 'package:sqflite/sqflite.dart';
 class DBHelper {
   static DBHelper? _instance;
 
-  Database? database;
+  late Database _database;
 
-  init() async {
+  _init() async {
     var dbPath = await getDatabasesPath();
-    database = openDatabase(
+    _database = await openDatabase(
       join(dbPath, "banco.db"),
       version: 1,
       onCreate: (db, version) async{
@@ -21,7 +21,7 @@ class DBHelper {
                 );
 """);
       },
-    ) as Database;
+    );
 
   }
 
@@ -29,15 +29,14 @@ class DBHelper {
     // ignore: prefer_conditional_assignment
     if(_instance == null) {
       _instance = DBHelper();
-      _instance?.init();
+      await _instance?._init();
     }
     return _instance!;
 
   }
 
-  static Future<List<Contato>> getAllContatos() async{
-    DBHelper helper = await DBHelper.getInstance();
-    List<Map<String, Object?>> rows = await helper.database!.query("contatos");
+  Future<List<Contato>> getAllContatos() async{
+    List<Map<String, Object?>> rows = await _database.query("contatos");
     List<Contato> contatos = List.empty();
 
     for (var element in rows) {

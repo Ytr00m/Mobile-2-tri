@@ -1,12 +1,16 @@
+import 'package:aulaweb2508/pages/form_contato.dart';
 import 'package:aulaweb2508/pages/lista.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 void main() {
   if (kIsWeb) {
     databaseFactory = databaseFactoryFfiWeb;
+  } else {
+    databaseFactory = databaseFactoryFfi;
   }
   runApp(const MyApp());
 }
@@ -31,7 +35,11 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.cyan,
       ),
-      home: const ListaPage(),
+      routes: {
+        "home": (context) => const ListaPage(),
+        "form_contato": (context) => FormContato(),
+      },
+      initialRoute: "home",
     );
   }
 }
